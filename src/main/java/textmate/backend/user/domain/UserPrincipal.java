@@ -31,7 +31,7 @@ public class UserPrincipal implements UserDetails {
     }
 
     public Long getUserId() {
-        return user.getId();
+        return user.getUserId();
     }
 
     @Override
