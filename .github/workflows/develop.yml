@@ -78,7 +78,6 @@ jobs:
             sudo docker run -d --name textmate-backend \
               --restart unless-stopped \
               -p 8080:8080 \
-              --env-file ~/app.env \
               ${{ secrets.AWS_ECR_REGISTRY }}
             
             echo "배포 완료"
