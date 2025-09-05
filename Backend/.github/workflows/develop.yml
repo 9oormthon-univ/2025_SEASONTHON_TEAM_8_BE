@@ -72,23 +72,13 @@ jobs:
             echo "[4] 기존 백엔드 컨테이너 제거"
             sudo docker rm -f textmate-backend 2>/dev/null || true
 
-            echo "[5] Redis 컨테이너가 appnet에 있는지 보장(존재 시 연결)"
-            # redis가 실행 중이면 네트워크에 연결 시도(없으면 무시)
-            if sudo docker ps -q -f name=^/redis$ >/dev/null; then
-              sudo docker network connect appnet redis 2>/dev/null || true
-            fi
-
-            echo "[6] 새 컨테이너 실행"
+            echo "[5] 새 컨테이너 실행"
             test -f ~/app.env || (echo "app.env 없음"; exit 1)
 
             sudo docker run -d --name textmate-backend \
               --restart unless-stopped \
-              --network appnet \
               -p 8080:8080 \
               --env-file ~/app.env \
-              -e REDIS_HOST=redis \
-              -e REDIS_PORT=6379 \
-              -v /home/ubuntu/backend/uploads:/app/uploads \
               ${{ secrets.AWS_ECR_REGISTRY }}/textmate:latest
             
             echo "배포 완료"
