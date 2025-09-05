@@ -1,27 +1,86 @@
 package textmate.backend.chat.application;
+
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theokanning.openai.completion.CompletionRequest;
 import com.theokanning.openai.service.OpenAiService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import textmate.backend.chat.api.dto.ChatAnalysisHistoryRes;
+import textmate.backend.chat.api.dto.ChatAnalysisResponse;
 import textmate.backend.chat.api.dto.character.GptResult;
+import textmate.backend.chat.domain.ChatAnalysisHistory;
 import textmate.backend.chat.domain.ChatAnalysisHistoryRepository;
 import textmate.backend.chat.domain.RelationshipType;
+import textmate.backend.user.domain.User;
 import textmate.backend.user.domain.repository.UserRepository;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.List;
+import java.util.NoSuchElementException;
+
 @Service
 @RequiredArgsConstructor
-
 public class ChatAnalysisService {
 
     private final ChatAnalysisHistoryRepository repo;
     private final UserRepository userRepo;
     private final OpenAiService openAiService;
     private final ObjectMapper om = new ObjectMapper();
+
+    // ===================== 컨트롤러에서 호출하는 메서드 =====================
+
+    @Transactional
+    public ChatAnalysisResponse analyzeAndSave(Long userId, MultipartFile file) {
+        User user = userRepo.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("사용자 없음"));
+
+        // 최근 500줄 읽기
+        String content = readTail(file, 500);
+
+        // GPT 호출
+        GptResult gpt = callGpt(content);
+
+        // DB 저장
+        ChatAnalysisHistory history = new ChatAnalysisHistory(
+                user,
+                mapType(gpt.getType()),
+                gpt.getSummary(),
+                gpt.getMessageCount(),
+                gpt.getRawJson()
+        );
+        repo.save(history);
+
+        // 응답 DTO 변환
+        return new ChatAnalysisResponse(
+                history.getId(),
+                history.getRelationshipType().name(),
+                history.getMessageCount(),
+                history.getSummary()
+        );
+    }
+
+    @Transactional(readOnly = true)
+    public List<ChatAnalysisHistoryRes> getUserHistories(Long userId) {
+        User user = userRepo.getReferenceById(userId);
+        return repo.findByUserOrderByCreatedAtDesc(user).stream()
+                .map(ChatAnalysisHistoryRes::from)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public ChatAnalysisHistoryRes getHistoryDetail(Long userId, Long historyId) {
+        User user = userRepo.getReferenceById(userId);
+        ChatAnalysisHistory history = repo.findByIdAndUser(historyId, user)
+                .orElseThrow(() -> new NoSuchElementException("분석 내역을 찾을 수 없습니다."));
+        return ChatAnalysisHistoryRes.from(history);
+    }
+
+    // ===================== 내부 헬퍼 메서드 =====================
 
     /** 파일 끝에서 N줄 읽기 */
     private String readTail(MultipartFile file, int lines) {
@@ -70,12 +129,12 @@ public class ChatAnalysisService {
 
         try {
             JsonNode n = om.readTree(json);
-
-            String type = n.path("type").asText("OTHER");
-            String summary = n.path("summary").asText("");
-            int count = n.path("messageCount").asInt(0);
-
-            return new GptResult(type, summary, count, json);
+            return new GptResult(
+                    n.path("type").asText("OTHER"),
+                    n.path("summary").asText(""),
+                    n.path("messageCount").asInt(0),
+                    json
+            );
         } catch (Exception e) {
             return new GptResult("OTHER", "(분석 결과 파싱 실패) " + raw, 0, raw);
         }

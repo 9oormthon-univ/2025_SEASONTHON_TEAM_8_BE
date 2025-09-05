@@ -12,39 +12,49 @@ import textmate.backend.chat.application.ChatAnalysisService;
 import textmate.backend.user.domain.UserPrincipal;
 
 import java.util.List;
-
 @RestController
 @RequestMapping("/api/chat")
 @RequiredArgsConstructor
+@PreAuthorize("isAuthenticated()") // 클래스 단위에서 인증 필수
 public class ChatController {
 
     private final ChatAnalysisService chatAnalysisService;
 
+    /**
+     * 대화 파일 업로드 → 분석 → DB 저장
+     */
     @PostMapping("/analyze")
-    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ChatAnalysisResponse> analyze(
-            @AuthenticationPrincipal UserPrincipal principal, // 구글 로그인 후 발급된 사용자
+            @AuthenticationPrincipal UserPrincipal principal,
             @RequestParam("file") MultipartFile file
     ) {
-        return ResponseEntity.ok(
-                chatAnalysisService.analyzeAndSave(principal.getUserId(), file)
-        );
+        if (file == null || file.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        ChatAnalysisResponse response = chatAnalysisService.analyzeAndSave(principal.getUserId(), file);
+        return ResponseEntity.ok(response);
     }
 
+    /**
+     * 내 분석 내역 전체 조회
+     */
     @GetMapping("/history")
-    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<ChatAnalysisHistoryRes>> myHistory(
             @AuthenticationPrincipal UserPrincipal principal
     ) {
-        return ResponseEntity.ok(chatAnalysisService.getUserHistories(principal.getUserId()));
+        List<ChatAnalysisHistoryRes> histories = chatAnalysisService.getUserHistories(principal.getUserId());
+        return ResponseEntity.ok(histories);
     }
 
+    /**
+     * 분석 내역 단건 조회
+     */
     @GetMapping("/history/{historyId}")
-    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ChatAnalysisHistoryRes> detail(
             @AuthenticationPrincipal UserPrincipal principal,
             @PathVariable Long historyId
     ) {
-        return ResponseEntity.ok(chatAnalysisService.getHistoryDetail(principal.getUserId(), historyId));
+        ChatAnalysisHistoryRes history = chatAnalysisService.getHistoryDetail(principal.getUserId(), historyId);
+        return ResponseEntity.ok(history);
     }
 }
