@@ -14,6 +14,7 @@ import textmate.backend.chatrooms.application.ChatAnalysisService;
 import textmate.backend.chatrooms.application.ChatRoomCommandService;
 import textmate.backend.chatrooms.domain.Enum.ChatRoomType;
 
+
 @Slf4j
 @RestController
 @RequestMapping("/api/chat/analysis")
@@ -35,13 +36,13 @@ public class ChatAnalysisController {
     ) {
         try {
             log.info("채팅 분석 요청 받음 - 타입: {}, 파일명: {}", chatRoomType, file.getOriginalFilename());
-            
+
             // 입력 검증
             if (file == null || file.isEmpty()) {
                 log.warn("파일이 비어있음");
                 return ResponseEntity.badRequest().build();
             }
-            
+
             if (chatRoomType == null) {
                 log.warn("채팅방 타입이 null");
                 return ResponseEntity.badRequest().build();
@@ -53,9 +54,9 @@ public class ChatAnalysisController {
 
             ChatAnalysisResponse response = chatAnalysisService.analyze(request);
             log.info("채팅 분석 완료 - ID: {}", response.getId());
-            
+
             return ResponseEntity.ok(response);
-            
+
         } catch (Exception e) {
             log.error("채팅 분석 중 오류 발생", e);
             return ResponseEntity.internalServerError().build();
