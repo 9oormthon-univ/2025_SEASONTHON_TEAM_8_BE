@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import textmate.backend.chatrooms.api.dto.ChatAnalysisRequest;
 import textmate.backend.chatrooms.api.dto.ChatAnalysisResponse;
-import textmate.backend.chatrooms.domain.AnalysisType;
+import textmate.backend.chatrooms.domain.Enum.AnalysisType;
 import textmate.backend.chatrooms.domain.ChatAnalysisHistory;
 import textmate.backend.chatrooms.domain.ChatAnalysisHistoryRepository;
 

@@ -1,4 +1,4 @@
-package textmate.backend.chatrooms.domain;
+package textmate.backend.chatrooms.domain.Enum;
 
 public enum AnalysisType {
     GROUP,   // 단체톡방

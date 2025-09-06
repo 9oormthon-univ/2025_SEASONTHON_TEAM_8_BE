@@ -2,6 +2,7 @@ package textmate.backend.chatrooms.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import textmate.backend.chatrooms.domain.Enum.AnalysisType;
 
 import java.time.LocalDateTime;
 

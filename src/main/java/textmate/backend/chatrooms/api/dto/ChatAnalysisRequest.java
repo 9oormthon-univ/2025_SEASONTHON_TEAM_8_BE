@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
-import textmate.backend.chatrooms.domain.AnalysisType;
+import textmate.backend.chatrooms.domain.Enum.AnalysisType;
 
 @Getter
 @Setter

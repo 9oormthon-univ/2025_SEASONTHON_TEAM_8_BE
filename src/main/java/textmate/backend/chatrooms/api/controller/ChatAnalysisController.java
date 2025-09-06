@@ -10,7 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import textmate.backend.chatrooms.api.dto.ChatAnalysisResponse;
 import textmate.backend.chatrooms.api.dto.ChatAnalysisRequest;
 import textmate.backend.chatrooms.application.ChatAnalysisService;
-import textmate.backend.chatrooms.domain.AnalysisType;
+import textmate.backend.chatrooms.domain.Enum.AnalysisType;
 
 @RestController
 @RequestMapping("/api/chat/analysis")

@@ -3,7 +3,7 @@ package textmate.backend.chatrooms.api.dto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import textmate.backend.chatrooms.domain.AnalysisType;
+import textmate.backend.chatrooms.domain.Enum.AnalysisType;
 
 @Getter
 @Builder
