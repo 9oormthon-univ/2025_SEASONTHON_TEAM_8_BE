@@ -1,0 +1,83 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Build Docker image and deploy to EC2
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: temurin
+
+      - name: Grant execute permission for Gradle
+        run: chmod +x ./gradlew
+
+      - name: Build with Gradle (without tests)
+        run: ./gradlew build -x test
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-region: ap-northeast-2
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Log in to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build Docker image
+        run: docker build -t textmate .
+
+      - name: Tag Docker image for ECR
+        run: docker tag textmate:latest ${{ secrets.AWS_ECR_REGISTRY }}
+
+      - name: Push Docker image to ECR
+        run: docker push ${{ secrets.AWS_ECR_REGISTRY }}
+
+      - name: Deploy on EC2 via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_PUBLIC_IP }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          script_stop: true
+          script: |
+            set -e
+            
+            echo "[1] 8080 포트 점유 프로세스 종료(있으면)"
+            PID=$(sudo lsof -t -i:8080 || true)
+            if [ -n "$PID" ]; then sudo kill -9 $PID || true; fi
+            
+            echo "[2] ECR 로그인"
+            aws ecr get-login-password --region ap-northeast-2 \
+              | sudo docker login --username AWS --password-stdin ${{ secrets.AWS_ECR_REGISTRY }}
+
+            echo "[3] 최신 이미지 Pull"
+            sudo docker pull ${{ secrets.AWS_ECR_REGISTRY }}
+
+            echo "[4] 기존 백엔드 컨테이너 제거"
+            sudo docker rm -f textmate-backend 2>/dev/null || true
+
+            echo "[5] 새 컨테이너 실행"
+            ENV_FILE=/home/ubuntu/2025_SEASONTHON_TEAM_8_BE/app.env
+            test -f "$ENV_FILE" || (echo "env 파일 없음: $ENV_FILE"; exit 1)
+
+            sudo docker run -d --name textmate-backend \
+              --restart unless-stopped \
+              -p 8080:8080 \
+              --env-file "$ENV_FILE" \
+              ${{ secrets.AWS_ECR_REGISTRY }}
