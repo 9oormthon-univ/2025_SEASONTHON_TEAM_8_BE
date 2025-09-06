@@ -7,10 +7,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import textmate.backend.chatrooms.api.dto.response.ChatRoomItemResponse;
 import textmate.backend.chatrooms.api.dto.response.ChatRoomPageResponse;
 import textmate.backend.chatrooms.application.ChatRoomQueryService;
 import textmate.backend.chatrooms.domain.Enum.ChatRoomSort;
 import textmate.backend.chatrooms.domain.Enum.ChatRoomType;
+
+import java.util.List;
 
 /**
  * 방 목록 조회 컨트롤러 (DB 미사용)
@@ -37,4 +40,18 @@ public class ChatRoomQueryController {
                 chatRoomQueryService.getRooms(userId, query, type, sort, page, size)
         );
     }
+
+    // 전체 조회
+    @GetMapping("/all")
+    public ResponseEntity<List<ChatRoomItemResponse>> getAll(
+            @AuthenticationPrincipal(expression = "id") Long userId,
+            @RequestParam(value = "query", required = false) String query,
+            @RequestParam(value = "type", required = false) ChatRoomType type,
+            @RequestParam(value = "sort", required = false, defaultValue = "DEFAULT") ChatRoomSort sort
+    ) {
+        return ResponseEntity.ok(
+                chatRoomQueryService.getAllRooms(userId, query, type, sort)
+        );
+    }
+
 }

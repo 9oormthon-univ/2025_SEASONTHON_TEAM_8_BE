@@ -103,4 +103,67 @@ public class ChatRoomQueryService {
                 .totalPages(totalPages)
                 .build();
     }
+
+    @Transactional(readOnly = true)
+    public List<ChatRoomItemResponse> getAllRooms(Long userId,
+                                                  String query,
+                                                  ChatRoomType type,
+                                                  ChatRoomSort sort) {
+
+        // 1) 원본 + 필터
+        String q = (query == null) ? "" : query.trim().toLowerCase();
+        List<ChatRoom> rooms = new ArrayList<>(store.findAllRooms()).stream()
+                .filter(r -> !r.isDeleted())
+                .filter(r -> q.isEmpty() || r.getName().toLowerCase().contains(q))
+                .filter(r -> type == null || r.getType() == type)
+                .collect(Collectors.toList());
+
+        // 2) 정렬
+        rooms.sort(switch (sort == null ? ChatRoomSort.DEFAULT : sort) {
+            case RECENTLY_ACTIVE -> cmpRecentlyActive();
+            case PINNED_TOP     -> cmpPinnedTop(userId);
+            default             -> cmpDefault();
+        });
+
+        // 3) 매핑
+        return rooms.stream()
+                .map(r -> ChatRoomItemResponse.builder()
+                        .id(r.getId().toString())
+                        .name(r.getName())
+                        .type(r.getType())
+                        .pinned(store.isPinned(userId, r.getId()))
+                        .deleted(r.isDeleted())
+                        .lastMessageAt(r.getLastMessageAt() == null ? null : ISO.format(r.getLastMessageAt()))
+                        .createdAt(ISO.format(r.getCreatedAt()))
+                        .build())
+                .toList();
+    }
+    private Comparator<ChatRoom> cmpDefault() {
+        return Comparator.comparing(ChatRoom::getCreatedAt,
+                        Comparator.nullsLast(Comparator.naturalOrder()))
+                .reversed();
+    }
+    private Comparator<ChatRoom> cmpRecentlyActive() {
+        return Comparator
+                .<ChatRoom, Integer>comparing(r -> r.getLastMessageAt() == null ? 1 : 0) // null → 뒤로
+                .thenComparing(ChatRoom::getLastMessageAt,
+                        Comparator.nullsLast(Comparator.naturalOrder()))
+                .reversed()
+                .thenComparing(ChatRoom::getCreatedAt,
+                        Comparator.nullsLast(Comparator.naturalOrder()))
+                .reversed();
+    }
+    private Comparator<ChatRoom> cmpPinnedTop(Long userId) {
+        return (a, b) -> {
+            boolean ap = store.isPinned(userId, a.getId());
+            boolean bp = store.isPinned(userId, b.getId());
+
+            // pinned 우선
+            if (ap != bp) return ap ? -1 : 1;
+
+            // pinned 동일 → 최근 활동 기준
+            return cmpRecentlyActive().thenComparing(cmpDefault()).compare(a, b);
+        };
+    }
+
 }
