@@ -1,4 +1,4 @@
-package textmate.backend.chatrooms.application;
+package textmate.backend.chatrooms.domain;
 
 import org.springframework.stereotype.Component;
 import textmate.backend.chatrooms.domain.chatRoom.ChatRoom;
@@ -46,5 +46,9 @@ public class InMemoryChatRoomStore {
         } else {
             pinnedByUser.get(userId).remove(roomId);
         }
+    }
+
+    public Optional<ChatRoom> findById(UUID id) {
+        return Optional.ofNullable(rooms.get(id));
     }
 }

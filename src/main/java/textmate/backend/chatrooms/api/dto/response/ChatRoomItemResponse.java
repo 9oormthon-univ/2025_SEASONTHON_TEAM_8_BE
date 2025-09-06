@@ -14,4 +14,6 @@ public class ChatRoomItemResponse {
     private boolean deleted;       // 소프트 삭제 여부
     private String lastMessageAt;  // ISO-8601 문자열 (nullable)
     private String createdAt;      // ISO-8601 문자열
+
+    private String avatarText;
 }

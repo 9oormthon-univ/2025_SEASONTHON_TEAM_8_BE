@@ -7,6 +7,7 @@ import textmate.backend.chatrooms.api.dto.response.ChatRoomItemResponse;
 import textmate.backend.chatrooms.api.dto.response.ChatRoomPageResponse;
 import textmate.backend.chatrooms.domain.Enum.ChatRoomSort;
 import textmate.backend.chatrooms.domain.Enum.ChatRoomType;
+import textmate.backend.chatrooms.domain.InMemoryChatRoomStore;
 import textmate.backend.chatrooms.domain.chatRoom.ChatRoom;
 
 import java.time.format.DateTimeFormatter;
