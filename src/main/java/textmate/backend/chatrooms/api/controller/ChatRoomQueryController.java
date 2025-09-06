@@ -17,7 +17,7 @@ import textmate.backend.chatrooms.domain.Enum.ChatRoomType;
  * GET /chatrooms?query=&type=&sort=&page=0&size=20
  */
 @RestController
-@RequestMapping("/api/chat//chatrooms")
+@RequestMapping("/api/chat/chatrooms")
 @RequiredArgsConstructor
 public class ChatRoomQueryController {
 
