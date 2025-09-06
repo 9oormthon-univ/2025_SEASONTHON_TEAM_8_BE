@@ -1,4 +1,4 @@
-package textmate.backend.chat.domain;
+package textmate.backend.chatgpt.domain;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import textmate.backend.user.domain.User;

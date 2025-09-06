@@ -1,4 +1,4 @@
-package textmate.backend.chat.api.dto.character;
+package textmate.backend.chatgpt.api.dto.character;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

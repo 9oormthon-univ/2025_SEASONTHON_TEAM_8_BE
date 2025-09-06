@@ -1,4 +1,4 @@
-package textmate.backend.chat.domain;
+package textmate.backend.chatgpt.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;

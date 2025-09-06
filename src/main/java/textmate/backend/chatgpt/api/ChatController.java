@@ -1,4 +1,4 @@
-package textmate.backend.chat.api;
+package textmate.backend.chatgpt.api;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -6,9 +6,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import textmate.backend.chat.api.dto.ChatAnalysisHistoryRes;
-import textmate.backend.chat.api.dto.ChatAnalysisResponse;
-import textmate.backend.chat.application.ChatAnalysisService;
+import textmate.backend.chatgpt.api.dto.ChatAnalysisHistoryRes;
+import textmate.backend.chatgpt.api.dto.ChatAnalysisResponse;
+import textmate.backend.chatgpt.application.ChatAnalysisService;
 import textmate.backend.user.domain.UserPrincipal;
 
 import java.util.List;

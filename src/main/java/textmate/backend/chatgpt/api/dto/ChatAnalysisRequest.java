@@ -1,4 +1,4 @@
-package textmate.backend.chat.api.dto;
+package textmate.backend.chatgpt.api.dto;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.NoArgsConstructor;

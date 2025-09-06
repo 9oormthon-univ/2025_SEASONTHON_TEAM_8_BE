@@ -1,8 +1,8 @@
-package textmate.backend.chat.api.dto;
+package textmate.backend.chatgpt.api.dto;
 
 import lombok.Builder;
 import lombok.Getter;
-import textmate.backend.chat.domain.ChatAnalysisHistory;
+import textmate.backend.chatgpt.domain.ChatAnalysisHistory;
 
 import java.time.LocalDateTime;
 

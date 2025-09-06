@@ -1,4 +1,4 @@
-package textmate.backend.chat.application;
+package textmate.backend.chatgpt.application;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -9,13 +9,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import textmate.backend.chat.api.dto.character.Diagnosis;
-import textmate.backend.chat.api.dto.character.GroupAnalysisResponse;
-import textmate.backend.chat.api.dto.character.ParticipantCard;
-import textmate.backend.chat.api.dto.character.TopContributor;
-import textmate.backend.chat.domain.ChatAnalysisHistory;
-import textmate.backend.chat.domain.ChatAnalysisHistoryRepository;
-import textmate.backend.chat.domain.RelationshipType;
+import textmate.backend.chatgpt.api.dto.character.Diagnosis;
+import textmate.backend.chatgpt.api.dto.character.GroupAnalysisResponse;
+import textmate.backend.chatgpt.api.dto.character.ParticipantCard;
+import textmate.backend.chatgpt.api.dto.character.TopContributor;
+import textmate.backend.chatgpt.domain.ChatAnalysisHistory;
+import textmate.backend.chatgpt.domain.ChatAnalysisHistoryRepository;
+import textmate.backend.chatgpt.domain.RelationshipType;
 import textmate.backend.user.domain.User;
 import textmate.backend.user.domain.repository.UserRepository;
 

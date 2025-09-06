@@ -14,7 +14,7 @@ import textmate.backend.auth_google.application.UserGoogleLoginService;
 @Slf4j
 @RestController
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
-@RequestMapping("/auth/google")
+@RequestMapping("login/oauth2/code/google")
 
 public class GoogleController{
     private final UserGoogleLoginService userGoogleLoginService;
