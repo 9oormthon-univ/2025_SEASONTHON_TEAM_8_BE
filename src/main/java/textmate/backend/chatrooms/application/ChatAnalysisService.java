@@ -11,6 +11,7 @@ import textmate.backend.chatrooms.api.dto.response.ChatAnalysisResponse;
 import textmate.backend.chatrooms.domain.ChatAnalysisHistory;
 import textmate.backend.chatrooms.domain.ChatAnalysisHistoryRepository;
 import textmate.backend.chatrooms.domain.Enum.ChatRoomType;
+import textmate.backend.user.domain.User;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -40,22 +41,23 @@ public class ChatAnalysisService {
         }
 
         // 3. DB 저장
-        ChatAnalysisHistory entity = ChatAnalysisHistory.builder()
+        ChatAnalysisHistory history = ChatAnalysisHistory.builder()
                 .type(request.getChatRoomType())
                 .rawText(rawText)
                 .resultJson(resultJson)
                 .createdAt(LocalDateTime.now())
+                .user(User.builder().userId(1L).build())
                 .build();
 
-        repository.save(entity);
+        history = repository.save(history);
 
         // 4. Response 반환
         return ChatAnalysisResponse.builder()
-                .id(entity.getId())
+                .id(history.getId())
                 .type(request.getChatRoomType())
                 .summary(summary)
                 .resultJson(resultJson)
-                .createdAt(entity.getCreatedAt().toString())
+                .createdAt(history.getCreatedAt().toString())
                 .build();
     }
 

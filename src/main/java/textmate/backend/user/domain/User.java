@@ -36,10 +36,11 @@ public class User{
     }
 
     @Builder
-    public User(String name, String email, String profileImage, String password) {
+    public User(Long userId, String name, String email, String profileImage, String password) {
+        this.userId = userId;
         this.name = name;
         this.email = email;
-        this.profileImage=profileImage;
+        this.profileImage = profileImage;
         this.password = password;
     }
 }
