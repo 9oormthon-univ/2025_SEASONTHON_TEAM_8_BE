@@ -33,36 +33,6 @@ public class ChatRoomQueryController {
 
     private final ChatRoomQueryService chatRoomQueryService;
 
-    @GetMapping
-    public ResponseEntity<ChatRoomPageResponse> getRooms(
-            @RequestParam(value = "query", required = false) String query,
-            @RequestParam(value = "type", required = false) ChatRoomType type,
-            @RequestParam(value = "sort", required = false, defaultValue = "DEFAULT") ChatRoomSort sort,
-            @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "20") int size
-    ) {
-        try {
-            Long userId = 1L; // ✅ 로컬 테스트용 하드코딩
-
-            log.info("채팅방 목록 조회 요청 - userId: {}, query: {}, type: {}, sort: {}, page: {}, size: {}",
-                    userId, query, type, sort, page, size);
-
-            if (page < 0) {
-                return ResponseEntity.badRequest().build();
-            }
-            if (size <= 0 || size > 100) {
-                return ResponseEntity.badRequest().build();
-            }
-
-            ChatRoomPageResponse response = chatRoomQueryService.getRooms(userId, query, type, sort, page, size);
-            return ResponseEntity.ok(response);
-
-        } catch (Exception e) {
-            log.error("채팅방 목록 조회 중 오류 발생", e);
-            return ResponseEntity.internalServerError().build();
-        }
-    }
-
     @GetMapping("/all")
     public ResponseEntity<List<ChatRoomItemResponse>> getAll(
             @RequestParam(value = "query", required = false) String query,
