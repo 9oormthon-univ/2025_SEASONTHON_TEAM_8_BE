@@ -33,6 +33,10 @@ public class UserPrincipal implements UserDetails {
     public Long getUserId() {
         return user.getUserId();
     }
+    
+    public Long getId() {
+        return user.getUserId();
+    }
 
     @Override
     public String getUsername() {
