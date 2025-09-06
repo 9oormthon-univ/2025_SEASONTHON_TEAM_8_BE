@@ -17,7 +17,7 @@ public class SwaggerConfig {
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
-                .addServersItem(new Server().url("https://nowskhu.zapto.org")) // 도메인주소 입력할 것
+                .addServersItem(new Server().url("https://textmate.zapto.org")) // 도메인주소 입력할 것
                 .addSecurityItem(new SecurityRequirement().addList(SECURITY_SCHEME_NAME))
 
                 .components(new Components()
@@ -29,8 +29,8 @@ public class SwaggerConfig {
                                         .bearerFormat("JWT")         // 형식: JWT (표시용, 동작에 영향 없음)
                         )
                 )
-                .info(new Info().title("Nowskhu API")
-                        .description("API documentation for nowskhu")
+                .info(new Info().title("Textmate API")
+                        .description("API documentation for textmate")
                         .version("v1.0.0"));
     }
 }

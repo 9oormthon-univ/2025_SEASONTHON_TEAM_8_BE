@@ -81,4 +81,3 @@ jobs:
               -p 8080:8080 \
               --env-file "$ENV_FILE" \
               ${{ secrets.AWS_ECR_REGISTRY }}
-
