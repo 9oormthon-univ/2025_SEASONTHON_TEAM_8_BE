@@ -2,7 +2,7 @@ package textmate.backend.chatrooms.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
-import textmate.backend.chatrooms.domain.Enum.AnalysisType;
+import textmate.backend.chatrooms.domain.Enum.ChatRoomType;
 
 import java.time.LocalDateTime;
 
@@ -18,7 +18,7 @@ public class ChatAnalysisHistory {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    private AnalysisType type;   // GROUP | PRIVATE
+    private ChatRoomType type;   // GROUP | PRIVATE
 
     @Lob
     private String rawText;      // 원본 텍스트

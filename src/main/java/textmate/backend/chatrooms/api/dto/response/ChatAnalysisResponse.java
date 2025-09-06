@@ -1,9 +1,9 @@
-package textmate.backend.chatrooms.api.dto;
+package textmate.backend.chatrooms.api.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import textmate.backend.chatrooms.domain.Enum.AnalysisType;
+import textmate.backend.chatrooms.domain.Enum.ChatRoomType;
 
 @Getter
 @Builder
@@ -13,7 +13,7 @@ import textmate.backend.chatrooms.domain.Enum.AnalysisType;
 
 public class ChatAnalysisResponse {
     private Long id;             // 분석 결과 id
-    private AnalysisType type;   // GROUP or PRIVATE
+    private ChatRoomType type;   // GROUP or PRIVATE
     private String summary;      // 한 줄 요약
     private String resultJson;   // 상세 분석 결과(JSON)
     private String createdAt;

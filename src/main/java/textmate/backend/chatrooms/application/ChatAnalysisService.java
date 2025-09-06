@@ -3,9 +3,9 @@ package textmate.backend.chatrooms.application;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import textmate.backend.chatrooms.api.dto.ChatAnalysisRequest;
-import textmate.backend.chatrooms.api.dto.ChatAnalysisResponse;
-import textmate.backend.chatrooms.domain.Enum.AnalysisType;
+import textmate.backend.chatrooms.api.dto.request.ChatAnalysisRequest;
+import textmate.backend.chatrooms.api.dto.response.ChatAnalysisResponse;
+import textmate.backend.chatrooms.domain.Enum.ChatRoomType;
 import textmate.backend.chatrooms.domain.ChatAnalysisHistory;
 import textmate.backend.chatrooms.domain.ChatAnalysisHistoryRepository;
 
@@ -25,7 +25,7 @@ public class ChatAnalysisService {
         // 2. 분석 로직 분기
         String resultJson;
         String summary;
-        if (request.getAnalysisType() == AnalysisType.GROUP) {
+        if (request.getChatRoomType() == ChatRoomType.GROUP) {
             resultJson = analyzeGroupChat(rawText);
             summary = "단체톡방 분석 완료";
         } else {
@@ -35,7 +35,7 @@ public class ChatAnalysisService {
 
         // 3. DB 저장
         ChatAnalysisHistory entity = ChatAnalysisHistory.builder()
-                .type(request.getAnalysisType())
+                .type(request.getChatRoomType())
                 .rawText(rawText)
                 .resultJson(resultJson)
                 .createdAt(LocalDateTime.now())
@@ -46,7 +46,7 @@ public class ChatAnalysisService {
         // 4. Response 반환
         return ChatAnalysisResponse.builder()
                 .id(entity.getId())
-                .type(request.getAnalysisType())
+                .type(request.getChatRoomType())
                 .summary(summary)
                 .resultJson(resultJson)
                 .createdAt(entity.getCreatedAt().toString())
