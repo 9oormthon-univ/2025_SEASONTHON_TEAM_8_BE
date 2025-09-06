@@ -20,9 +20,7 @@ public class ChatController {
 
     private final ChatAnalysisService chatAnalysisService;
 
-    /**
-     * 대화 파일 업로드 → 분석 → DB 저장
-     */
+    // 대화 파일 업로드 -> 분석 -> DB 저장
     @PostMapping("/analyze")
     public ResponseEntity<ChatAnalysisResponse> analyze(
             @AuthenticationPrincipal UserPrincipal principal,
@@ -35,9 +33,7 @@ public class ChatController {
         return ResponseEntity.ok(response);
     }
 
-    /**
-     * 내 분석 내역 전체 조회
-     */
+    // 내 분석 내역 전체 조회
     @GetMapping("/history")
     public ResponseEntity<List<ChatAnalysisHistoryRes>> myHistory(
             @AuthenticationPrincipal UserPrincipal principal
@@ -46,9 +42,7 @@ public class ChatController {
         return ResponseEntity.ok(histories);
     }
 
-    /**
-     * 분석 내역 단건 조회
-     */
+    // 분석 내역 단건 조회
     @GetMapping("/history/{historyId}")
     public ResponseEntity<ChatAnalysisHistoryRes> detail(
             @AuthenticationPrincipal UserPrincipal principal,

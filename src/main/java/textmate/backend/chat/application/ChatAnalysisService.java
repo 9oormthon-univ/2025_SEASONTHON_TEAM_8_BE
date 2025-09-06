@@ -82,7 +82,7 @@ public class ChatAnalysisService {
 
     // ===================== 내부 헬퍼 메서드 =====================
 
-    /** 파일 끝에서 N줄 읽기 */
+    // 파일 끝에서 N줄 읽기
     private String readTail(MultipartFile file, int lines) {
         try {
             String all = new String(file.getBytes(), StandardCharsets.UTF_8);
@@ -94,7 +94,7 @@ public class ChatAnalysisService {
         }
     }
 
-    /** GPT 호출 → JSON 파싱 → GptResult 반환 */
+    // GPT 호출 -> json 파싱 -> GptResult 반환
     private GptResult callGpt(String content) {
         if (content.length() > 12000) {
             content = content.substring(content.length() - 12000);
@@ -140,7 +140,7 @@ public class ChatAnalysisService {
         }
     }
 
-    /** 백틱/잡음 제거해서 순수 JSON만 남기기 */
+    // 백틱/잡음 제거해서 Json만 남기기
     private String sanitizeToJson(String raw) {
         String s = raw.trim();
         if (s.startsWith("```")) {
@@ -159,7 +159,7 @@ public class ChatAnalysisService {
         return s;
     }
 
-    /** LLM이 준 type 문자열 → enum 매핑 */
+    // LLM이 준 type 문자열 -> enum 매핑
     private RelationshipType mapType(String t) {
         if (t == null) return RelationshipType.OTHER;
         String x = t.trim().toUpperCase();

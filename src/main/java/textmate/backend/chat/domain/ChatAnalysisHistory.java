@@ -28,7 +28,7 @@ public class ChatAnalysisHistory {
 
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    // 선택: LLM 구조화 출력 저장용 (JSON 또는 TEXT)
+    // LLM 구조화 출력 저장용 (JSON 또는 TEXT)
     @Lob
     @Column(columnDefinition = "TEXT")
     private String analysisJson;
