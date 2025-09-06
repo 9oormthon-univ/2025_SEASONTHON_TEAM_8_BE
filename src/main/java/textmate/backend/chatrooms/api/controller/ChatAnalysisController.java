@@ -2,7 +2,6 @@ package textmate.backend.chatrooms.api.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import textmate.backend.chatrooms.api.dto.request.ChatAnalysisRequest;
@@ -35,26 +34,24 @@ public class ChatAnalysisController {
         ChatAnalysisResponse response = chatAnalysisService.analyze(request);
         return ResponseEntity.ok(response);
     }
+
     /** 1.3 GET /chatrooms/{roomId} */
     @GetMapping("/{roomId}")
-    public ResponseEntity<ChatRoomResponse> getOne(
-            @AuthenticationPrincipal(expression = "id") Long userId,
-            @PathVariable String roomId
-    ) {
-        return ResponseEntity.ok(service.getOne(userId, roomId));
+    public ResponseEntity<ChatRoomResponse> getOne(@PathVariable String roomId) {
+        // 로그인 필요 없으니 userId 제거
+        return ResponseEntity.ok(service.getOne(null, roomId));
     }
 
     /** 1.4 PATCH /chatrooms/{roomId} */
     @PatchMapping("/{roomId}")
     public ResponseEntity<ChatRoomResponse> patch(
-            @AuthenticationPrincipal(expression = "id") Long userId,
             @PathVariable String roomId,
             @RequestBody UpdateChatRoomRequest request
     ) {
-        return ResponseEntity.ok(service.patch(userId, roomId, request));
+        return ResponseEntity.ok(service.patch(null, roomId, request));
     }
 
-    /** 1.5 DELETE /chatrooms/{roomId}  → 204 No Content */
+    /** 1.5 DELETE /chatrooms/{roomId} */
     @DeleteMapping("/{roomId}")
     public ResponseEntity<Void> delete(@PathVariable String roomId) {
         service.softDelete(roomId);

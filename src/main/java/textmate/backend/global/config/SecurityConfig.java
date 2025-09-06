@@ -37,7 +37,8 @@ public class SecurityConfig {
                 .logout(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
                         .requestMatchers(
-                                "/login/oauth2/code/google",               // 소셜 로그인 관련 엔드포인트 허용
+                                "/login/oauth2/code/google",// 소셜 로그인 관련 엔드포인트 허용
+                                "/api/**",
                                 "/logOut",                // 로그아웃 경로 허용
                                 "/swagger-ui/**",           // Swagger UI 허용
                                 "/v3/api-docs/**",          // Swagger 문서 허용
