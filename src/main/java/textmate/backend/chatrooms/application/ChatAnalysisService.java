@@ -3,12 +3,14 @@ package textmate.backend.chatrooms.application;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import textmate.backend.chatrooms.api.dto.request.ChatAnalysisRequest;
 import textmate.backend.chatrooms.api.dto.response.ChatAnalysisResponse;
-import textmate.backend.chatrooms.domain.Enum.ChatRoomType;
 import textmate.backend.chatrooms.domain.ChatAnalysisHistory;
 import textmate.backend.chatrooms.domain.ChatAnalysisHistoryRepository;
+import textmate.backend.chatrooms.domain.Enum.ChatRoomType;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 
 @Service
@@ -53,9 +55,9 @@ public class ChatAnalysisService {
                 .build();
     }
 
-    private String extractText(org.springframework.web.multipart.MultipartFile file) {
+    private String extractText(MultipartFile file) {
         try {
-            return new String(file.getBytes());
+            return new String(file.getBytes(), StandardCharsets.UTF_8); // 강제 UTF-8
         } catch (Exception e) {
             throw new RuntimeException("파일 읽기 실패", e);
         }
