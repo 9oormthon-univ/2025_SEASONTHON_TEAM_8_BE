@@ -64,21 +64,12 @@ public class ChatAnalysisService {
             if (file == null || file.isEmpty()) {
                 throw new IllegalArgumentException("업로드된 파일이 비어있습니다.");
             }
-
-            // 1차 시도: UTF-8
             String text = new String(file.getBytes(), StandardCharsets.UTF_8);
-
-            // 혹시 깨진다면 EUC-KR(MS949)로 다시 시도 가능
-            if (text.contains("�")) {
-                log.warn("텍스트 깨짐 감지, MS949로 재시도합니다.");
+            if (text.contains("�")) { // 깨짐 감지 시
                 text = new String(file.getBytes(), Charset.forName("MS949"));
             }
-
-            log.info("업로드된 파일명: {}, 크기: {} bytes", file.getOriginalFilename(), file.getSize());
             return text;
-
         } catch (Exception e) {
-            log.error("파일 읽기 실패", e);
             throw new RuntimeException("파일 읽기 실패: " + e.getMessage(), e);
         }
     }

@@ -1,6 +1,7 @@
 package textmate.backend.chatrooms.api.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,10 +23,10 @@ public class ChatAnalysisController {
 
     //카톡 대화 분석 요청 (단체톡방/개인톡방 선택)
     //방생성
-    @PostMapping
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ChatAnalysisResponse> analyzeChat(
             @RequestParam("chatRoomType") ChatRoomType chatRoomType,
-            @RequestParam("file") MultipartFile file
+            @RequestPart("file") MultipartFile file
     ) {
         ChatAnalysisRequest request = new ChatAnalysisRequest();
         request.setFile(file);
