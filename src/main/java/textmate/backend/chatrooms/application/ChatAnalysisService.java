@@ -1,6 +1,8 @@
 package textmate.backend.chatrooms.application;
 
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -10,6 +12,7 @@ import textmate.backend.chatrooms.domain.ChatAnalysisHistory;
 import textmate.backend.chatrooms.domain.ChatAnalysisHistoryRepository;
 import textmate.backend.chatrooms.domain.Enum.ChatRoomType;
 
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 
@@ -17,6 +20,7 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class ChatAnalysisService {
 
+    private static final Logger log = LoggerFactory.getLogger(ChatAnalysisService.class);
     private final ChatAnalysisHistoryRepository repository;
 
     @Transactional
@@ -57,9 +61,25 @@ public class ChatAnalysisService {
 
     private String extractText(MultipartFile file) {
         try {
-            return new String(file.getBytes(), StandardCharsets.UTF_8); // 강제 UTF-8
+            if (file == null || file.isEmpty()) {
+                throw new IllegalArgumentException("업로드된 파일이 비어있습니다.");
+            }
+
+            // 1차 시도: UTF-8
+            String text = new String(file.getBytes(), StandardCharsets.UTF_8);
+
+            // 혹시 깨진다면 EUC-KR(MS949)로 다시 시도 가능
+            if (text.contains("�")) {
+                log.warn("텍스트 깨짐 감지, MS949로 재시도합니다.");
+                text = new String(file.getBytes(), Charset.forName("MS949"));
+            }
+
+            log.info("업로드된 파일명: {}, 크기: {} bytes", file.getOriginalFilename(), file.getSize());
+            return text;
+
         } catch (Exception e) {
-            throw new RuntimeException("파일 읽기 실패", e);
+            log.error("파일 읽기 실패", e);
+            throw new RuntimeException("파일 읽기 실패: " + e.getMessage(), e);
         }
     }
 
