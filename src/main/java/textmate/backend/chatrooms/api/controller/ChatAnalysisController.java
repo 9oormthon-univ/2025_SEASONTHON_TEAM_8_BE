@@ -39,7 +39,7 @@ public class ChatAnalysisController {
         return ResponseEntity.ok(response);
     }
 
-    /** 1.3 GET /chatrooms/{roomId} */
+    // GET /chatrooms/{roomId}
     @GetMapping("/{roomId}")
     public ResponseEntity<ChatRoomResponse> getOne(@PathVariable String roomId) {
         // 로그인 필요 없으니 userId 제거
