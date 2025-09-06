@@ -1,4 +1,4 @@
-package textmate.backend.chatgpt.api.dto;
+package textmate.backend.chatgpt.api.individual;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,12 +7,14 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-@Getter
+public @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SummaryAdviceDto {
+class SpeechStyleSection {
+    private String title;         // "당신의 말투는?"
+    private String narrative;     // 전체 서술
     private List<String> strengths;
     private List<String> weaknesses;
-    private String advice;   // 종합 조언
+    private String advice;        // 개선 팁
 }

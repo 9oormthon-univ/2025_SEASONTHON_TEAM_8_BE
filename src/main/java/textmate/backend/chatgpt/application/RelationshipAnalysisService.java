@@ -8,7 +8,7 @@ import com.theokanning.openai.service.OpenAiService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import textmate.backend.chatgpt.api.dto.RelationshipAnalysisResponse;
+import textmate.backend.chatgpt.api.organization.RelationshipAnalysisResponse;
 import textmate.backend.chatrooms.domain.Enum.ChatRoomType;
 
 import java.nio.charset.StandardCharsets;
@@ -66,29 +66,35 @@ public class RelationshipAnalysisService {
     }
 
     private String buildPrompt(ChatRoomType type, String conversation) {
+        String scope = (type == ChatRoomType.GROUP) ? "단체톡방" : "개인톡방";
         return """
-                카톡 대화 로그입니다. 최근 %s 대화에 대해 분석해주세요.
-                반드시 JSON 형식으로 출력하세요.
-                {
-                  "relationships": [
-                    {
-                      "me": "사용자 이름",
-                      "partner": "상대방 이름",
-                      "analysis": "관계 분석",
-                      "solution": "해결 및 조언",
-                      "strengths": ["..."],
-                      "weaknesses": ["..."]
-                    }
-                  ],
-                  "summary": {
-                    "strengths": ["..."],
-                    "weaknesses": ["..."],
-                    "advice": "종합 조언"
-                  }
-                }
-                
-                대화:
-                %s
-                """.formatted(type == ChatRoomType.GROUP ? "단체톡방" : "개인톡방", conversation);
+      다음은 %s 카카오톡 대화의 최근 일부다.
+      아래 JSON 스키마에 '정확히' 맞춰 결과만 출력해라. 코드펜스(```), 불필요한 텍스트 금지.
+
+      {
+        "relationshipSection": {
+          "title": "당신과의 관계는?",
+          "items": [
+            {
+              "pairTitle": "나 & 상대방",          // 예: "정수경 & 000"
+              "oneLine": "두 사람의 관계를 한 줄로 요약",
+              "partnerPersona": "상대방은 어떤 사람(대화 습관/톤/에너지)이다",
+              "perceivedAs": "그래서 때때로 ~처럼 보일 때가 있다",
+              "solution": "이 관계가 더 좋아지도록 내가 취할 행동/말투/빈도에 대한 구체 조언",
+              "exampleLines": ["예시 멘트1","예시 멘트2"]  // 1~3개
+            }
+          ],
+          "summary": {
+            "strengths": ["강점1","강점2"],
+            "weaknesses": ["보완점1","보완점2"],
+            "advice": "종합 조언"
+          }
+        }
+      }
+
+      --- 분석 시작 ---
+      %s
+      --- 분석 종료 ---
+      """.formatted(scope, conversation);
     }
 }

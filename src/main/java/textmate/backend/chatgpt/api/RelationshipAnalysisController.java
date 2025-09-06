@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import textmate.backend.chatgpt.api.dto.RelationshipAnalysisResponse;
+import textmate.backend.chatgpt.api.organization.RelationshipAnalysisResponse;
 import textmate.backend.chatgpt.application.RelationshipAnalysisService;
 import textmate.backend.chatrooms.domain.Enum.ChatRoomType;
 

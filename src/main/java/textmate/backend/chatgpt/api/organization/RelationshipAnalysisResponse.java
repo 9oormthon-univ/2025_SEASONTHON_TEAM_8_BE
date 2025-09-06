@@ -1,4 +1,4 @@
-package textmate.backend.chatgpt.api.dto;
+package textmate.backend.chatgpt.api.organization;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
